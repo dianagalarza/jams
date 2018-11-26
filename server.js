@@ -1,14 +1,17 @@
 //this link has all the emit stuff thatll probably help a lot:
 // https://socket.io/docs/emit-cheatsheet/
 const
-    io = require("socket.io"),
-    server = io.listen(8000);
+    io = require("socket.io")
+  //  server = io.listen(8000);
 let
     sequenceNumberByClient = new Map();
 var usernames = [];
-
+http = require('http');
+var server = http.createServer();
+server.listen(1234, '0.0.0.0');
+var socketServer = io.listen(server);
 // event fired every time a new client connects:
-server.on("connection", (socket) => {
+socketServer.on("connection", (socket) => {
     console.info(`Client connected [id=${socket.id}]`);
     // initialize this client's sequence number
     sequenceNumberByClient.set(socket, 1);
@@ -35,7 +38,7 @@ server.on("connection", (socket) => {
     });
     socket.on("message", (msg) => {
         console.log("User with username '" + getClientUsername(socket.id) + "' sends message '" + msg.msg + "' to user with username '" + usernames[msg.numberOnList][1] + "'");
-        server.to(usernames[msg.numberOnList][0]).emit('message', [getClientUsername(socket.id), msg.msg]);
+        socketServer.to(usernames[msg.numberOnList][0]).emit('message', [getClientUsername(socket.id), msg.msg]);
 
     });
 });

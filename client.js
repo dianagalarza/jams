@@ -1,6 +1,6 @@
 const
     io = require("socket.io-client"),
-    ioClient = io.connect("http://localhost:8000");
+    ioClient = io.connect("http://0.0.0.0:1234");
 const readline = require('readline');
 var async = require('async');
 var message = new Object();
