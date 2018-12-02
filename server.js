@@ -1,6 +1,17 @@
 const express = require('express')
 const app = express()
+var MongoClient = require('mongodb').MongoClient;
+var url = "mongodb://localhost:27017/jams";
+MongoClient.connect(url, function (err, db) {
+    if (err) throw err;
 
+    var dbo = db.db("jams");
+    dbo.createCollection("pastMessages", function (err, res) {
+        if (err) throw err;
+        console.log("Collection created!");
+        db.close();
+    });
+});
 
 //set the template engine ejs
 app.set('view engine', 'ejs')
@@ -26,7 +37,16 @@ const io = require("socket.io")(server)
 //listen on every connection
 io.on('connection', (socket) => {
     console.log('New user connected')
-
+    MongoClient.connect(url, function (err, db) {
+        if (err) throw err;
+        var dbo = db.db("jams");
+        dbo.collection("pastMessages").find({}).toArray(function (err, result) {
+            if (err) throw err;
+            console.log(result);
+            db.close();
+            socket.emit("pastMessages", result);
+        });
+    });
     //default username
     socket.username = "Anonymous"
 
@@ -39,6 +59,16 @@ io.on('connection', (socket) => {
     socket.on('new_message', (data) => {
         //broadcast the new message
         io.sockets.emit('new_message', { message: data.message, username: socket.username });
+        MongoClient.connect(url, function (err, db) {
+            if (err) throw err;
+            var dbo = db.db("jams");
+            var myobj = { message: data.message, username: socket.username };
+             dbo.collection("pastMessages").insertOne(myobj, function (err, res) {
+                 if (err) throw err;
+                 console.log("1 document inserted");
+                 db.close();
+             });
+        });
     })
 
     //listen on typing

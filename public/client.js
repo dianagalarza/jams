@@ -11,6 +11,13 @@ $(function(){
     var chatroom = $("#chatroom")
     var feedback = $("#feedback")
 
+    socket.on("pastMessages", (result) => {
+        for (var i = 0; i < result.length; i++) {
+            chatroom.append("<p class='message'>" + result[i].username + ": " + result[i].message + "</p>")
+
+        }
+    })
+
     //Emit message
     send_message.click(function(){
         socket.emit('new_message', {message : message.val()})
