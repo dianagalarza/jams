@@ -90,5 +90,5 @@ p.message {
 }
 
 .message:nth-child(odd) {
-    background-color: #ffffff;
+    background-color: #gray;
 }
