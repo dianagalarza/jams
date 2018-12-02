@@ -7,7 +7,7 @@ let
 var usernames = [];//array for all users online
 http = require('http');
 var server = http.createServer();//http based server (aka ip addresses)
-server.listen(1234, '0.0.0.0');//make sure this is the same in client.js
+server.listen(3000, 'localhost');//make sure this is the same in client.js
 var socketServer = io.listen(server);//server constantly awaits requests from clients
 socketServer.on("connection", (socket) => {//server can interact with a client when it actually connects
     console.info(`Client connected [id=${socket.id}]`);
