@@ -27,7 +27,12 @@ $(function(){
     socket.on("new_message", (data) => {
         feedback.html('');
         message.val('');
-        chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
+        if (data.username == username.val()) {
+            chatroom.append("<p class='message' style = 'background-color:#972b45; color:white;'>" + data.username + ": " + data.message + "</p>")
+        }
+        else {
+            chatroom.append("<p class='message'>" + data.username + ": " + data.message + "</p>")
+        }
     })
 
     //Emit a username
@@ -44,6 +49,6 @@ $(function(){
     socket.on('typing', (data) => {
         feedback.html("<p><i>" + data.username + " is typing a message..." + "</i></p>")
     })
-});
 
+});
 
